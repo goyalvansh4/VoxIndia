@@ -5,14 +5,17 @@ import App from './App.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
 import Login from './pages/Login.jsx';
 import SignUp from './pages/SignUp.jsx';
-import Home from './pages/Home.jsx';
-import TextToSpeech from './pages/TextToSpeech.jsx';
+import { ProtectedRoute } from '../Private/PrivateRoute.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/*" element={<App />}></Route>
+        <Route path="/*" element={
+          <ProtectedRoute>
+          <App />
+          </ProtectedRoute>
+          }/>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
       </Routes>

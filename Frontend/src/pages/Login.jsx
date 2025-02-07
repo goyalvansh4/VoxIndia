@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Loader2 } from "lucide-react";
+import GlobalAxios from '../../Global/GlobalAxios';
+import Cookies from 'js-cookie'
+
 
 const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -21,9 +24,16 @@ const Login = () => {
       setLoading(true);
       setError('');
       try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        alert(JSON.stringify(values, null, 2));
+        const res = await GlobalAxios.post("/auth/login",
+          JSON.stringify(values)
+        );
+        if(res.data.status === "success"){
+          // console.log(res.data.data);
+          const {token,userId} = res.data.data;
+           Cookies.set("token",token);
+           Cookies.set("userId",userId);
+           navigate("/")
+        }
       } catch (err) {
         setError('Failed to login. Please try again.');
       } finally {

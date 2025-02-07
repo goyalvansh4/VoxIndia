@@ -1,25 +1,16 @@
 // secure route'
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
-dotenv.config();
+const jwt = require("jsonwebtoken");
 
-const authMiddleWare = async(req,res,next)=>{
-  const token = (req.headers["authorization"]).split(" ")[1];
-  if(!token){
-    return res.status(401).json({message:"Unauthorized Access"});
+module.exports = function (req, res, next) {
+  const token = req.header("x-auth-token");
+
+  if (!token) return res.status(401).json({ message: "No token, authorization denied" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(400).json({ message: "Invalid token" });
   }
-  else{
-    jwt.verify(token,process.env.JWT_SECRET,(err,decoded)=>{
-      if(err){
-        return res.status(401).json({message:"Unauthorized Access"});
-      }
-      else{
-        req.user = decoded;
-        next();
-      }
-    });
-  }
-}
-
-
-module.exports = {authMiddleWare};
+};

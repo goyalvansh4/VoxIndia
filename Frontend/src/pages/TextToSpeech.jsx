@@ -28,15 +28,8 @@ const TextToSpeech = () => {
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
         <h1 className="text-xl font-bold text-center mb-4">Text to Speech</h1>
-        <form onSubmit={handleGenerateSpeech} className="space-y-4">
-          <div className="relative flex items-center">
-            <textarea 
-              placeholder="Enter the text..." 
-              value={text} 
-              onChange={(e) => setText(e.target.value)} 
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-40"
-            />
-            <div className="absolute top-2 right-2 flex space-x-2">
+        <form onSubmit={handleGenerateSpeech} className="relative space-y-4">
+        <div className="flex justify-end space-x-2">
               <select 
                 value={language} 
                 onChange={(e) => setLanguage(e.target.value)} 
@@ -58,6 +51,14 @@ const TextToSpeech = () => {
                 <option value="female">Female Voice</option>
               </select>
             </div>
+          <div className=" flex items-center">
+            <textarea 
+              placeholder="Enter the text..." 
+              value={text} 
+              onChange={(e) => setText(e.target.value)} 
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-40"
+            />
+            
           </div>
           <div className="flex items-center space-x-2">
             <button 

@@ -4,6 +4,7 @@ const Home = () => {
   const [audio, setAudio] = useState(null);
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
+ 
 
   const handleGenerateSpeech = async (e) => {
     e.preventDefault();

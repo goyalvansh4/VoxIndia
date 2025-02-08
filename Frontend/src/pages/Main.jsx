@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import Home from './Home';
 import Navbar from '../components/Navbar';
 import TextToSpeech from './TextToSpeech';
-import { Outlet, Route, Routes } from 'react-router';
+import Cookies from 'js-cookie'
+import {Route, Routes, useNavigate } from 'react-router';
 
 const Main = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    // console.log(params)
+    const token = params.get("token");
+
+    if (token) {
+      Cookies.set("token", token); // Save token
+      navigate("/"); // Redirect to home
+    }
+  }, []);
+
   return (
     <div className="flex flex-col h-screen">
       <Navbar />

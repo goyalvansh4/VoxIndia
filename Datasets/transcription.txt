@@ -1,0 +1,7 @@
+audio1.wav|Hello, my name is AI VoxIndia. (English)
+audio2.wav|नमस्कार, माझं नाव AI VoxIndia आहे. (Marathi)
+audio3.wav|नमस्ते, मेरा नाम एआई वॉक्सइंडिया है। (Hindi)
+audio4.wav|வணக்கம், என் பெயர் ஏஐ வாக்ஸ்இந்தியா. (Tamil)
+audio5.wav|হ্যালো, আমার নাম এআই ভক্সইন্ডিয়া. (Bengali)
+audio6.wav|నమస్కారం, నా పేరు ఏఐ వాక్స్‌ఇండియా. (Telugu)
+audio7.wav|ನಮಸ್ಕಾರ, ನನ್ನ ಹೆಸರು ಏಐ ವಾಕ್ಸ್ಇಂಡಿಯಾ. (Kannada)

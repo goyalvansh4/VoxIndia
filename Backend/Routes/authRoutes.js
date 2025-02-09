@@ -48,10 +48,6 @@ Router.get(
     
     // Send token and user data to frontend
     const token = req.user.token;
-    // res.json({
-    //   userId:req.user.user._id,
-    //   token:req.user.token
-    // })
     res.redirect(`http://localhost:5173/?token=${token}`);
   }
 );

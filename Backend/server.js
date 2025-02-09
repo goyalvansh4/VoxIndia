@@ -5,6 +5,7 @@ const cors = require('cors');
 const http = require('http');
 const connectDB = require('./DB/connectDB');
 const authRoutes = require('./Routes/authRoutes');
+const voiceGenerate = require('./Routes/voiceGenerateRoutes')
 const passport = require("passport")
 
 dotenv.config();
@@ -43,6 +44,7 @@ app.use(passport.session());
 
 // API Routes
 app.use(`${BASE_URL}/auth`, authRoutes);
+app.use(`${BASE_URL}/generate-voice`, voiceGenerate);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {

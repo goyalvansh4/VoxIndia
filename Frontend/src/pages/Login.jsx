@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -11,6 +11,22 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  
+
+  // useEffect(()=>{
+  //   const fetchToken = async()=>{
+  //     try {
+  //     const res=await GlobalAxios.get("/auth/check-auth");
+  //     if(res.data.authenticated){
+  //       Cookies.set("token",res.data.token)
+  //       navigate("/")
+  //     }
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  //   }
+  //   fetchToken();
+  // },[])
 
   const formik = useFormik({
     initialValues: {

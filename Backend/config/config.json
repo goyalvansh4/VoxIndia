@@ -1,0 +1,7 @@
+{
+  "model": "coqui-tts",
+  "language": ["mr", "hi", "en", "bn", "ta", "te", "kn"],
+  "speakers": 6,
+  "dataset": "/dataset/",
+  "output_model": "/output/multi_language_model/"
+}

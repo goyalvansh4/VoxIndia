@@ -10,6 +10,7 @@ const GlobalAxios = axios.create({
     Accept: "application/json", // Ensuring JSON content type
     "Content-Type": "application/json",
   },
+  withCredentials:true
 });
 
 // Adding a request interceptor to dynamically attach the token

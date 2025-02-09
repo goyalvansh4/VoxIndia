@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import GlobalAxios from './../../Global/GlobalAxios';
 
 const Home = () => {
   const [audio, setAudio] = useState(null);
@@ -8,19 +9,20 @@ const Home = () => {
 
   const handleGenerateSpeech = async (e) => {
     e.preventDefault();
-    if (!text.trim()) return;
-
+     console.log('btn clicked');
     setLoading(true);
     try {
-      // Simulate fetching audio from an API
-      setTimeout(() => {
-        setAudio('sample-audio-url.mp3'); // Replace with real URL
-        setLoading(false);
-      }, 2000);
-    } catch (error) {
-      console.error("Error generating speech", error);
-      setLoading(false);
-    }
+      const response = await GlobalAxios.post("/generate-voice", {
+          text: "Hello, this is a test.",
+          language: "en",
+          speaker_id: "default"
+      });
+
+      console.log(response.data);
+      alert("Voice file generated: " + response.data.file_path);
+  } catch (error) {
+      console.error("Error generating voice:", error);
+  }
   };
 
   return (

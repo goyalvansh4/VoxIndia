@@ -12,9 +12,9 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
         <Route path="/*" element={
-          // <ProtectedRoute>
+          <ProtectedRoute>
           <App />
-          // </ProtectedRoute>
+          </ProtectedRoute>
           }/>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />

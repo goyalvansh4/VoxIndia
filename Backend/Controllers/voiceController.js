@@ -1,57 +1,35 @@
 const path = require("path");
 const fs = require("fs");
-const gTTS = require("gtts");
-
-// Define language options with gender preferences
-const languageOptions = {
-    "en-male": "en-us", // Default English Male (US)
-    "en-female": "en-uk", // English Female (UK Accent)
-    "hi-male": "hi", // Hindi Male
-    "hi-female": "hi-in", // Hindi Female
-    "es-male": "es", // Spanish Male
-    "es-female": "es-es", // Spanish Female
-};
-
+const axios = require("axios");
 
 const createVoice = async (req, res) => {
-    const { text, language, gender } = req.body;
-
-    if (!text || !language || !gender) {
-        return res.status(400).json({ error: "Text, language, and gender are required" });
-    }
-
-    // Choose the correct language variant
-    const selectedLanguage = languageOptions[`${language}-${gender}`];
-    if (!selectedLanguage) {
-        return res.status(400).json({ error: "Invalid language or gender selection" });
-    }
-
     try {
-        const tts = new gTTS(text, selectedLanguage);
-        const filePath = path.join(__dirname, "output.mp3");
+        const response = await axios({
+            method: "get",
+            url: `http://YOUR_FASTAPI_SERVER_IP:8000/generate-voice/`,
+            params: { text:"Hello World", language:"en" },
+            responseType: "stream", // Important: Receive as stream
+        });
 
-        // Save audio file
-        tts.save(filePath, (err) => {
-            if (err) {
-                console.error("Error saving audio:", err);
-                return res.status(500).json({ error: "Failed to generate speech" });
-            }
+        // Define file path
+        const filePath = `./received_audio/${language}.wav`;
 
-            // Send the generated file
-            res.sendFile(filePath, (err) => {
-                if (err) {
-                    console.error("Error sending file:", err);
-                }
-                // Optional: Delete the file after response
-                setTimeout(() => fs.unlinkSync(filePath), 5000);
-            });
+        // Ensure directory exists
+        if (!fs.existsSync("./received_audio")) {
+            fs.mkdirSync("./received_audio");
+        }
+
+        // Save the file
+        const writer = fs.createWriteStream(filePath);
+        response.data.pipe(writer);
+
+        writer.on("finish", () => {
+            console.log(`Audio file saved: ${filePath}`);
         });
 
     } catch (error) {
-        console.error("TTS Error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("Error fetching TTS audio:", error.message);
     }
-}
+};
 
-module.exports = {createVoice}
-
+module.exports = { createVoice };

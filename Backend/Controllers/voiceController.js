@@ -1,44 +1,56 @@
-const { spawn } = require("child_process");
 const path = require("path");
+const fs = require("fs");
+const gTTS = require("gtts");
+
+// Define language options with gender preferences
+const languageOptions = {
+    "en-male": "en-us", // Default English Male (US)
+    "en-female": "en-uk", // English Female (UK Accent)
+    "hi-male": "hi", // Hindi Male
+    "hi-female": "hi-in", // Hindi Female
+    "es-male": "es", // Spanish Male
+    "es-female": "es-es", // Spanish Female
+};
+
 
 const createVoice = async (req, res) => {
-  const { text, language, speaker_id } = req.body;
+    const { text, language, gender } = req.body;
 
-    if (!text) {
-        return res.status(400).json({ error: "Text is required" });
+    if (!text || !language || !gender) {
+        return res.status(400).json({ error: "Text, language, and gender are required" });
     }
 
-    // Run the Python script using child_process
-    const pythonProcess = spawn("python", [path.join(__dirname, "../utils/voicegenerator.py")]);
+    // Choose the correct language variant
+    const selectedLanguage = languageOptions[`${language}-${gender}`];
+    if (!selectedLanguage) {
+        return res.status(400).json({ error: "Invalid language or gender selection" });
+    }
 
-    // Send data to Python script
-    pythonProcess.stdin.write(JSON.stringify({ text, language, speaker_id }));
-    pythonProcess.stdin.end();
+    try {
+        const tts = new gTTS(text, selectedLanguage);
+        const filePath = path.join(__dirname, "output.mp3");
 
-    let result = "";
+        // Save audio file
+        tts.save(filePath, (err) => {
+            if (err) {
+                console.error("Error saving audio:", err);
+                return res.status(500).json({ error: "Failed to generate speech" });
+            }
 
-    // Read output from Python script
-    pythonProcess.stdout.on("data", (data) => {
-        result += data.toString();
-    });
+            // Send the generated file
+            res.sendFile(filePath, (err) => {
+                if (err) {
+                    console.error("Error sending file:", err);
+                }
+                // Optional: Delete the file after response
+                setTimeout(() => fs.unlinkSync(filePath), 5000);
+            });
+        });
 
-    pythonProcess.stdout.on("end", () => {
-        try {
-            const response = JSON.parse(result);
-            res.json(response);
-        } catch (error) {
-            res.status(500).json({ error: "Failed to parse Python response" });
-        }
-    });
-
-    pythonProcess.stderr.on("data", (data) => {
-        console.error("Python Error:", data.toString());
-    });
-
-    pythonProcess.on("error", (error) => {
-        console.error("Error executing Python script:", error);
-        res.status(500).json({ error: "Python execution failed" });
-    });
+    } catch (error) {
+        console.error("TTS Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 }
 
 module.exports = {createVoice}

@@ -3,16 +3,22 @@ const fs = require("fs");
 const axios = require("axios");
 
 const createVoice = async (req, res) => {
+    const { text, language } = req.query;  // Get text and language dynamically from query parameters
+
+    if (!text || !language) {
+        return res.status(400).send("Text and language parameters are required.");
+    }
+
     try {
         const response = await axios({
             method: "get",
-            url: `http://YOUR_FASTAPI_SERVER_IP:8000/generate-voice/`,
-            params: { text:"Hello World", language:"en" },
-            responseType: "stream", // Important: Receive as stream
+            url: `http://YOUR_FASTAPI_SERVER_IP:8000/generate-voice/`, // Replace with your actual FastAPI server URL
+            params: { text: text, language: language },
+            responseType: "stream",  // Important: Receive as stream
         });
 
-        // Define file path
-        const filePath = `./received_audio/${language}.wav`;
+        // Define file path dynamically
+        const filePath = path.join(__dirname, `./received_audio/${language}.wav`);
 
         // Ensure directory exists
         if (!fs.existsSync("./received_audio")) {
@@ -24,11 +30,18 @@ const createVoice = async (req, res) => {
         response.data.pipe(writer);
 
         writer.on("finish", () => {
-            console.log(`Audio file saved: ${filePath}`);
+            console.log(`Audio file saved at: ${filePath}`);
+            res.send({ message: "Audio file saved successfully", file_path: filePath });
+        });
+
+        writer.on("error", (err) => {
+            console.error("Error saving file:", err.message);
+            res.status(500).send("Error saving audio file.");
         });
 
     } catch (error) {
         console.error("Error fetching TTS audio:", error.message);
+        res.status(500).send("Error generating audio file.");
     }
 };
 
